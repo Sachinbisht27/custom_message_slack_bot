@@ -1,6 +1,7 @@
 from ssl import SSLContext
 import slack
 import config
+import traceback
 from utils import logger
 
 class SlackService:
@@ -17,10 +18,10 @@ class SlackService:
         try:
             response = self.slack_client.chat_postMessage(
                 channel=self.channel_name,
-                blocks=slack_block["blocks"],
+                blocks=slack_block.get("blocks", []),
             )
             logger.info(f"Alert Sent: {response}")
             return True
         except Exception as e:
-            logger.error(f"Exception occurred:{e}")
+            logger.error(f"Slack API Exception: {e}\n{traceback.format_exc()}")
             return False
